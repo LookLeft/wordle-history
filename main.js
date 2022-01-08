@@ -1258,10 +1258,10 @@
               var e,
                 a = this;
               this.shadowRoot.appendChild(Sa.content.cloneNode(!0)),
-                (this.shadowRoot.querySelector("#hash").textContent =
-                  null === (e = window.wordle) || void 0 === e
-                    ? void 0
-                    : e.hash),
+                // (this.shadowRoot.querySelector("#hash").textContent =
+                //   null === (e = window.wordle) || void 0 === e
+                //     ? void 0
+                //     : e.hash),
                 (this.shadowRoot.querySelector("#puzzle-number").textContent =
                   "#".concat(this.gameApp.dayOffset)),
                 this.shadowRoot.addEventListener(
