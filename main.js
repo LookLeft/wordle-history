@@ -14417,6 +14417,7 @@
     }
     var Ka = document.createElement("template");
     var selectedChallenge;
+    var maxChallenge;
     Ka.innerHTML =
       "\n  <style>\n  .toaster {\n    position: absolute;\n    top: 10%;\n    left: 50%;\n    transform: translate(-50%, 0);\n    pointer-events: none;\n    width: fit-content;\n  }\n  #game-toaster {\n    z-index: "
         .concat(1e3, ";\n  }\n  #system-toaster {\n    z-index: ")
@@ -14443,9 +14444,14 @@
           var offset = Number(
             ((window.location.search || "").match(/challenge=(\d+)/) || [])[1]
           );
+          var fromNow = $a(Ra, new Date());
+          maxChallenge = fromNow - 1;
           if (isNaN(offset) || offset < 0) {
-            var fromNow = $a(Ra, new Date());
-            selectedChallenge = fromNow - 1;
+            selectedChallenge = maxChallenge;
+            return new Date();
+          }
+          if (offset > maxChallenge) {
+            window.location.search = "?challenge=" + maxChallenge;
             return new Date();
           }
           selectedChallenge = offset;
@@ -15101,7 +15107,7 @@
     customElements.define("game-keyboard", ds);
     var cs = document.createElement("template");
     cs.innerHTML =
-      '\n  <style>\n    .container {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      padding: 16px 0; \n    }\n    h1 {\n      font-weight: 700;\n      font-size: 16px;\n      letter-spacing: 0.5px;\n      text-transform: uppercase;\n      text-align: center;\n      margin-bottom: 10px;\n    }\n  \n    #statistics {\n      display: flex;\n      margin-bottom: \n    }\n\n    .statistic-container {\n      flex: 1;\n    }\n\n    .statistic-container .statistic {\n      font-size: 36px;\n      font-weight: 400;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      letter-spacing: 0.05em;\n      font-variant-numeric: proportional-nums;\n    }\n\n    .statistic.timer {\n      font-variant-numeric: initial;\n    }\n\n    .statistic-container .label {\n      font-size: 12px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n    }\n\n    #guess-distribution {\n      width: 80%;\n    }\n\n    .graph-container {\n      width: 100%;\n      height: 20px;\n      display: flex;\n      align-items: center;\n      padding-bottom: 4px;\n      font-size: 14px;\n      line-height: 20px;\n    }\n\n    .graph-container .graph {\n      width: 100%;\n      height: 100%;\n      padding-left: 4px;\n    }\n\n    .graph-container .graph .graph-bar {\n      height: 100%;\n      /* Assume no wins */\n      width: 0%;\n      position: relative;\n      background-color: var(--color-absent);\n      display: flex;\n      justify-content: center;\n    }\n\n    .graph-container .graph .graph-bar.highlight {\n      background-color: var(--color-correct);\n    }\n\n    .graph-container .graph .graph-bar.align-right {\n      justify-content: flex-end;\n      padding-right: 8px;\n    }\n\n    .graph-container .graph .num-guesses {\n      font-weight: bold;\n      color: var(--tile-text-color);\n    }\n\n    #statistics,\n    #guess-distribution {\n      padding-bottom: 10px;\n    }\n\n    .footer {\n      display: flex;\n      width: 100%;\n    }\n\n    .countdown {\n      border-right: 1px solid var(--color-tone-1);\n      padding-right: 12px;\n      width: 50%;\n    }\n\n    .share {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      padding-left: 12px;\n      width: 50%;\n    }\n\n    button#share-button {\n      background-color: var(--key-bg-correct);\n      color: var(--key-evaluated-text-color);\n      font-family: inherit;\n      font-weight: bold;\n      border-radius: 4px;\n      cursor: pointer;\n      border: none;\n      user-select: none;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      text-transform: uppercase;\n      -webkit-tap-highlight-color: rgba(0,0,0,0.3);\n      width: 80%;\n      font-size: 20px;\n      height: 52px;\n      -webkit-filter: brightness(100%);\n    }\n    button#share-button:hover {\n      opacity: 0.9;\n    }\n    button#share-button game-icon {\n      width: 24px;\n      height: 24px;\n      padding-left: 8px;\n    }\n  </style>\n\n  <div class="container">\n    <h1>Statistics</h1>\n    <div id="statistics"></div>\n    <h1>Guess Distribution</h1>\n    <div id="guess-distribution"></div>\n    <div class="footer">\n      <div class="countdown">\n        <h1>Next WORDLE</h1>\n        <div id="timer">\n          <div class="statistic-container">\n            <div class="statistic timer">\n              <countdown-timer></countdown-timer>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class="share">\n        <button id="share-button">\n          Share <game-icon icon="share"></game-icon>\n        </button>\n      </div>\n    </div>\n  </div>\n';
+      '\n  <style>\n    .container {\n      display: flex;\n      flex-direction: column;\n      align-items: center;\n      justify-content: center;\n      padding: 16px 0; \n    }\n    h1 {\n      font-weight: 700;\n      font-size: 16px;\n      letter-spacing: 0.5px;\n      text-transform: uppercase;\n      text-align: center;\n      margin-bottom: 10px;\n    }\n  \n    #statistics {\n      display: flex;\n      margin-bottom: \n    }\n\n    .statistic-container {\n      flex: 1;\n    }\n\n    .statistic-container .statistic {\n      font-size: 36px;\n      font-weight: 400;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n      letter-spacing: 0.05em;\n      font-variant-numeric: proportional-nums;\n    }\n\n    .statistic.timer {\n      font-variant-numeric: initial;\n    }\n\n    .statistic-container .label {\n      font-size: 12px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      text-align: center;\n    }\n\n    #guess-distribution {\n      width: 80%;\n    }\n\n    .graph-container {\n      width: 100%;\n      height: 20px;\n      display: flex;\n      align-items: center;\n      padding-bottom: 4px;\n      font-size: 14px;\n      line-height: 20px;\n    }\n\n    .graph-container .graph {\n      width: 100%;\n      height: 100%;\n      padding-left: 4px;\n    }\n\n    .graph-container .graph .graph-bar {\n      height: 100%;\n      /* Assume no wins */\n      width: 0%;\n      position: relative;\n      background-color: var(--color-absent);\n      display: flex;\n      justify-content: center;\n    }\n\n    .graph-container .graph .graph-bar.highlight {\n      background-color: var(--color-correct);\n    }\n\n    .graph-container .graph .graph-bar.align-right {\n      justify-content: flex-end;\n      padding-right: 8px;\n    }\n\n    .graph-container .graph .num-guesses {\n      font-weight: bold;\n      color: var(--tile-text-color);\n    }\n\n    #statistics,\n    #guess-distribution {\n      padding-bottom: 10px;\n    }\n\n    .footer {\n      display: flex;\n      width: 100%;\n    }\n\n    .countdown {\n      border-right: 1px solid var(--color-tone-1);\n      padding-right: 12px;\n      width: 50%;\n    }\n\n    .share {\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      padding-left: 12px;\n      width: 50%;\n    }\n\n    button#next-button,button#previous-button {\n      background-color: var(--color-tone-3);\n      color: var(--key-evaluated-text-color);\n      font-family: inherit;\n      font-weight: bold;\n      border-radius: 4px;\n      cursor: pointer;\n      border: none;\n      user-select: none;\n      display: flex;\n      justify-content: center;\n      align-items: center;\n      text-transform: uppercase;\n      -webkit-tap-highlight-color: rgba(0,0,0,0.3);\n      width: 80%;\n      font-size: 20px;\n      height: 52px;\n      -webkit-filter: brightness(100%);\n    }\n    button#next-button:hover,button#previous-button:hover {\n      opacity: 0.9;\n    }\n    button#next-button game-icon {\n      width: 24px;\n      height: 24px;\n      padding-left: 8px;\n    }\n  </style>\n\n  <div class="container">\n    <h1>Statistics</h1>\n    <div id="statistics"></div>\n    <h1>Guess Distribution</h1>\n    <div id="guess-distribution"></div>\n    <div class="footer">\n         <div class="share">\n        <button id="previous-button">\n          Previous\n        </button>    \n      </div>\n      <div class="share">\n        <button id="next-button">\n          Next\n        </button>\n      </div>\n    </div>\n  </div>\n';
     var ps = document.createElement("template");
     ps.innerHTML =
       '\n  <div class="statistic-container">\n    <div class="statistic"></div>\n    <div class="label"></div>\n  </div>\n';
@@ -15178,70 +15184,29 @@
                     a.appendChild(r);
                 }),
                   this.shadowRoot
-                    .querySelector("button#share-button")
+                    .querySelector("button#next-button")
                     .addEventListener("click", function (a) {
                       a.preventDefault(), a.stopPropagation();
-                      us(
-                        (function (e) {
-                          var a = e.evaluations,
-                            s = e.dayOffset,
-                            t = e.rowIndex,
-                            o = e.isHardMode,
-                            r = e.isWin,
-                            n = JSON.parse(window.localStorage.getItem(j)),
-                            i = JSON.parse(window.localStorage.getItem(S)),
-                            l = "Wordle ".concat(s);
-                          (l += " ".concat(r ? t : "X", "/").concat(6)),
-                            o && (l += "*");
-                          var d = "";
-                          return (
-                            a.forEach(function (e) {
-                              e &&
-                                (e.forEach(function (e) {
-                                  if (e) {
-                                    var a = "";
-                                    switch (e) {
-                                      case Ia:
-                                        a = (function (e) {
-                                          return e ? "ðŸŸ§" : "ðŸŸ©";
-                                        })(i);
-                                        break;
-                                      case Ta:
-                                        a = (function (e) {
-                                          return e ? "ðŸŸ¦" : "ðŸŸ¨";
-                                        })(i);
-                                        break;
-                                      case Ca:
-                                        a = (function (e) {
-                                          return e ? "â¬›" : "â¬œ";
-                                        })(n);
-                                    }
-                                    d += a;
-                                  }
-                                }),
-                                (d += "\n"));
-                            }),
-                            { text: "".concat(l, "\n\n").concat(d.trimEnd()) }
-                          );
-                        })({
-                          evaluations: e.gameApp.evaluations,
-                          dayOffset: e.gameApp.dayOffset,
-                          rowIndex: e.gameApp.rowIndex,
-                          isHardMode: e.gameApp.hardMode,
-                          isWin: e.gameApp.gameStatus === Za,
-                        }),
-                        function () {
-                          e.gameApp.addToast(
-                            "Copied results to clipboard",
-                            2e3,
-                            !0
-                          );
-                        },
-                        function () {
-                          e.gameApp.addToast("Share failed", 2e3, !0);
-                        }
-                      );
+                      if (selectedChallenge < maxChallenge) {
+                        window.location.search =
+                          "?challenge=" + (selectedChallenge + 1);
+                      } else {
+                        window.alert(
+                          "Already on last challenge. Visit the origial site to see today's challenge"
+                        );
+                      }
                     });
+                this.shadowRoot
+                  .querySelector("button#previous-button")
+                  .addEventListener("click", function (a) {
+                    a.preventDefault(), a.stopPropagation();
+                    if (selectedChallenge > 0) {
+                      window.location.search =
+                        "?challenge=" + (selectedChallenge - 1);
+                    } else {
+                      window.alert("Already on first challenge");
+                    }
+                  });
               },
             },
           ]),
